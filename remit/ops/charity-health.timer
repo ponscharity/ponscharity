@@ -1,0 +1,12 @@
+[Unit]
+Description=Run the Pons Charity health check every 5 minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=5min
+# ⚠ A missed check must not fire a catch-up burst; the next one is five minutes away regardless.
+Persistent=false
+AccuracySec=30s
+
+[Install]
+WantedBy=timers.target

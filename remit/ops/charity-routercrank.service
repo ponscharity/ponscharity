@@ -1,0 +1,14 @@
+[Unit]
+Description=Pons Charity — split and burn a launch's creator share
+After=network-online.target
+
+[Service]
+Type=oneshot
+# ⛔ /root is where everything lives; ProtectHome=true kills this with 200/CHDIR before it runs.
+ProtectHome=false
+WorkingDirectory=/root/charity-remit
+EnvironmentFile=/root/charity-ops/keeper.env
+# ⚠ Optional so the unit still runs (read-only) on a box that has not been armed.
+EnvironmentFile=-/root/charity-ops/keeper.key.env
+ExecStart=/usr/bin/node /root/charity-remit/ops/router-cranker.mjs --send
+TimeoutStartSec=600

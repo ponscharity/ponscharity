@@ -1,0 +1,53 @@
+[Unit]
+# The remit keeper: sweep, harvest, and bridge each launch's charity share.
+#
+# ⛔⛔ ONESHOT, NEVER A LONG RUNNING SERVICE, AND THAT IS LOAD BEARING.
+# systemd will not start a second instance of a oneshot unit while the first is still running, and a
+# timer that fires during a run is skipped rather than queued. That is exactly the property this
+# needs: the keeper's "one launch at a time" rule is enforced WITHIN a pass, so two passes running
+# together would race each other on the single shared CharityPayer, and whichever `pay` fired first
+# would donate both launches' money to its own charity.
+Description=Pons Charity remit keeper
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/charity-remit
+# ⚠ The addresses live here, NOT in this file, so repointing the launchpad is one file and one
+# restart rather than an edit to a unit.
+EnvironmentFile=/root/charity-ops/keeper.env
+# ⛔⛔ THE KEY IS A SEPARATE FILE, AND ITS ABSENCE IS THE SAFETY.
+# Without KEEPER_KEY the keeper refuses to send and prints a dry run, so the timer can be installed
+# and proven long before any key is on this box. `-` means the unit still starts when it is missing.
+EnvironmentFile=-/root/charity-ops/keeper.key.env
+# ⚠ The wrapper adds `--send` only when a key is present, so an unarmed keeper dry runs and
+# exits 0 rather than marking this unit failed every thirty minutes.
+ExecStart=/root/charity-ops/run-keeper.sh
+# ⚠ A pass that hangs on an RPC must not hold the lock for ever and block every later pass.
+# ⚠⚠ 840, not 600: a pass is ~330s of sweeping and harvesting BEFORE the keeper waits for a
+# window in Relay's direct deposit route (up to 300s more, see SEARCH_BUDGET_MS in keeper.ts).
+# At 600 systemd SIGTERMed a pass mid-flight, which is how a delivery loses its attribution.
+# ⛔ Keep it under the timer's 15 min, or systemd skips the next fire instead of overlapping.
+TimeoutStartSec=840
+Restart=no
+Nice=10
+
+# Hardening. The keeper needs the network, its own directory, and nothing else.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+# ⛔⛔ ProtectHome must stay FALSE here. It hides /home, /root and /run/user from the unit, and
+# everything this keeper needs lives under /root: its source, its dependencies, its environment file
+# and its ledger. With it on, systemd could not even enter the working directory and the unit died
+# with 200/CHDIR before running a line of code. Caught by starting the service rather than by
+# reading the unit, which looked correct.
+ProtectHome=false
+ReadWritePaths=/root/charity-remit /root/charity-ops
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+[Unit]
+Description=Back up the Pons Charity remit ledger
+
+[Service]
+Type=oneshot
+ExecStart=/root/charity-ops/backup-receipts.sh
+Nice=15

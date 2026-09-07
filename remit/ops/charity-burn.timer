@@ -1,0 +1,16 @@
+[Unit]
+Description=Forward the burn share and buy back & burn $CHARITY
+
+[Timer]
+# ⛔⛔ OFFSET FROM BOTH OTHER UNITS. This signs with the OPS key, which is a different wallet from
+# the keeper's — so a nonce clash is not the risk here. The offset is because all three read the
+# same Cloudflare-fronted RPC, and three simultaneous passes is how that starts returning 403s.
+OnBootSec=12min
+OnUnitActiveSec=30min
+# ⚠ A missed pass is not lost work: the mark is a high-water counter, so the next pass forwards
+# everything that accrued in between. No burst, no double-forward.
+Persistent=false
+AccuracySec=30s
+
+[Install]
+WantedBy=timers.target

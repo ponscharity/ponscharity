@@ -1,0 +1,14 @@
+node_modules/
+dist/
+out/
+cache/
+contracts/lib/
+*.tsbuildinfo
+
+# ⛔ Never commit any of these. Keys are read from the environment at run time and the deploy
+# targets are infrastructure, not code.
+.env
+.env.*
+*.key
+*.keystore
+receipts.json

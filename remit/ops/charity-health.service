@@ -1,0 +1,24 @@
+[Unit]
+Description=Pons Charity health check (read-only)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/charity-remit
+# ⛔ NO KEEPER_KEY, and nothing that could acquire one. This unit signs nothing; it reads two chains
+#    and one file and writes status.json. Keeping the key out of its environment is the guarantee.
+# ⚠ Optional. Absent, the check still runs and still writes status.json for /api/status; it just
+#   sends nothing. `-` means a missing file is not an error, so alerting can be added later without
+#   touching this unit.
+EnvironmentFile=-/root/charity-remit/alert.env
+ExecStart=/usr/bin/node --experimental-strip-types /root/charity-remit/ops/health-check.mjs
+# ⚠ A health check that hangs must not accumulate. Shorter than its own interval.
+TimeoutStartSec=180
+# ⛔ ProtectHome would hide /root, which is where everything this reads lives. The keeper unit hit
+#    exactly this and died with 200/CHDIR.
+ProtectHome=false
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,1724 @@
+/*
+  Pons Charity — "silver on a green field"
+  ════════════════════════════════════════
+
+  ## Where the palette comes from
+
+  SAMPLED from the operator's logo, not chosen. The chrome heart runs #4E5A4B at its darkest edge
+  through #9CA89B at the median to #D4D8D4 on the highlight: a desaturated sage-silver, green enough
+  to read as a hue and grey enough to read as metal.
+
+  The accent is that same hue with the saturation raised. A polished object needs a flat colour
+  field behind it or it has nothing to be polished against, and the logo's own greens are too close
+  to its greys to serve as that field. So the blob keeps the hue and gains the chroma.
+
+  ## The rules that keep it from looking like everything else
+
+  1. ⛔ ONE SHINY THING. The mark is chrome; nothing else is. Buttons, cards and panels are flat.
+     A page where everything has a gradient reads as plastic, and the mark stops being special.
+  2. ⭐ THE HEADLINE IS THE PAGE. Set enormous, tight, and heavy, with almost no tracking. It is the
+     single largest design decision here and everything else is sized to stay out of its way.
+  3. ⛔ PILLS FOR ACTIONS, SQUARES FOR CONTENT. Buttons and chips are fully round; panels and cards
+     take a soft 14px. Mixing the two makes a page feel assembled rather than designed.
+  4. ⚠ Ink on the accent is near-black, never white. Measured, see scripts/contrast-audit.js.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ── ground: warm bone, so the metal has something with a temperature to sit on ── */
+  --paper: #f4f2ec;
+  --paper-2: #eeece5;
+  --panel: #ffffff;
+  --edge: #e4e1d8;
+  --edge-lit: #d6d2c6;
+
+  /* ── the accent: the logo's hue, saturation raised ── */
+  --accent: #cfe9b0;
+  --accent-hi: #ddf1c6;
+  --accent-deep: #a9d183;
+
+  /* ── the metal ── */
+  --chrome: #d4d8d4;
+  --sage: #7c8a7b;
+  --sage-deep: #46543f;
+
+  /* ── ink ── */
+  --ink: #14170f;          /* the near-black. Headlines, primary fills, active chips. */
+  --ink-2: #2a2f24;
+  --text: #14170f;
+  --text-dim: #57604f;
+  /* ⛔ MEASURED. The first pick failed AA on the small mono labels it is used for. Eyeballing this
+     is how the gacha palette shipped a 1.84:1 label twice. */
+  --text-faint: #626a5b;
+  --on-ink: #f4f2ec;
+  --on-accent: #14170f;
+
+  --danger: #a03c22;
+  /* ⭐ `--danger` desaturated and lifted into the warm bone family, for the burn share of a split.
+     A burn is not an error, so it should not shout in error red — but it should read as the part
+     that is being destroyed rather than kept. ⚠ Light enough to take INK text, like the accent. */
+  --clay: #d8a291;
+  --good: #2f6b41;
+
+  --font-display: 'Archivo', 'Inter Tight', system-ui, sans-serif;
+  --font-ui: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --wrap: 1300px;
+  --r: 14px;
+  --r-sm: 10px;
+  --pill: 999px;
+
+  --lift: 0 1px 2px rgba(20, 23, 15, 0.04), 0 10px 30px -22px rgba(20, 23, 15, 0.35);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+::selection { background: var(--accent); color: var(--on-accent); }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
+
+/* ══ type ═══════════════════════════════════════════════════════════════════
+
+  ⭐⭐ The headline is set at a size that feels slightly too large, because at merely large it reads
+  as a heading and at this size it reads as the page itself. Tracking goes NEGATIVE as size goes up:
+  a grotesque at 88px with default tracking looks loose and amateur, and it is the single most
+  common tell of a page that was typeset by nobody.
+*/
+
+h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; }
+
+h1 {
+  /* ⚠ Smaller than the left aligned version it replaced. Centred type has no column edge to hold
+     it, so the same size reads as shouting, and at 5.6rem it pushed the buttons under the fold on
+     a laptop, which is the one thing a hero must not do. */
+  font-size: clamp(2.7rem, 5.2vw, 4.4rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.035em;
+}
+h2 {
+  font-size: clamp(2.1rem, 4.1vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.032em;
+}
+h3 { font-size: 1.12rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.015em; }
+
+p { margin: 0 0 1rem; color: var(--text-dim); }
+
+.mono { font-family: var(--font-mono); font-size: 0.82em; letter-spacing: -0.02em; }
+
+.eyebrow {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0 0 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+/* ⚠ Rules on BOTH sides, because this label is centred in the hero and a rule on one side only
+   reads as a mistake there. Section eyebrows are left aligned and simply lose the leading rule. */
+.eyebrow::before, .eyebrow::after {
+  content: ''; height: 1px; flex: 1; max-width: 74px; background: var(--edge-lit);
+}
+.head .eyebrow::before { display: none; }
+.head .eyebrow::after { max-width: none; background: linear-gradient(90deg, var(--edge-lit), transparent); }
+
+/* ⭐ The one highlight device: a soft accent behind a word, not a colour change on it. Ink stays
+   black so the emphasis costs no legibility. */
+.hl {
+  background: var(--accent);
+  padding: 0 0.14em;
+  border-radius: 6px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* ══ layout ═════════════════════════════════════════════════════════════════ */
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 28px; }
+section { padding: 92px 0; position: relative; }
+.section--alt { background: var(--paper-2); }
+
+.head { max-width: 760px; margin-bottom: 44px; }
+.head p { font-size: 1.02rem; max-width: 62ch; }
+
+/* ⚠ A modifier, not a swap to `chead`. These three are an h2 section heading and two result states,
+   not page titles, so they keep their own type scale and heading level and only change alignment.
+   ⛔ The eyebrow's rules have to be put back: `.head` deliberately hides the leading one and turns
+   the trailing one into a one sided gradient, which is exactly right ranged left and lopsided the
+   moment the block is centred. */
+.head--center { margin-left: auto; margin-right: auto; text-align: center; }
+.head--center p { margin-left: auto; margin-right: auto; }
+.head--center .eyebrow { justify-content: center; }
+.head--center .eyebrow::before { display: block; }
+.head--center .eyebrow::after { max-width: 74px; background: var(--edge-lit); }
+
+/* ══ the mark ═══════════════════════════════════════════════════════════════
+
+  ⚠ The hero mark carried a slow specular sweep, a white highlight travelling across the artwork on
+  a nine second loop. Removed at the operator's request. The `@keyframes` and the reduced-motion
+  override went with it rather than being left behind as rules matching nothing.
+*/
+.mark { position: relative; display: block; flex: none; }
+.mark img { display: block; width: 100%; height: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition-duration: 0.01ms !important; }
+}
+
+/* ══ header ═════════════════════════════════════════════════════════════════ */
+
+.hdr {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(244, 242, 236, 0.88);
+  backdrop-filter: blur(14px) saturate(1.1);
+  border-bottom: 1px solid var(--edge);
+}
+/* ⚠ A three column grid with equal outer tracks, not a flex row. Centring with `margin: auto` puts
+   the nav in the middle of the LEFTOVER space, so it drifts as the wallet button's width changes
+   between "Connect" and an address. Equal 1fr tracks centre it against the page. */
+.hdr__in {
+  max-width: var(--wrap); margin: 0 auto; padding: 0 28px;
+  height: 72px;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 18px;
+}
+.hdr__right { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+.hdr__brand { display: flex; align-items: center; gap: 11px; min-height: 44px; }
+/* ⭐ The mark gets a rounded accent tile, the way a physical object gets a plinth. It also gives the
+   chrome something to be chrome against at 30px, where a metal gradient alone is just grey. */
+/* ⭐ The same roundel as the hero hallmark, at a smaller size. A rounded green square was both the
+   reference's device and out of step with the punch the hero is built on; one mark shape used at
+   two scales is what a hallmark actually looks like. */
+.hdr__tile {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--panel);
+  border: 1px solid var(--edge-lit);
+  display: grid; place-items: center; flex: none;
+}
+.hdr__tile .mark { width: 25px; height: 25px; }
+.hdr__name { font-family: var(--font-display); font-weight: 700; font-size: 1.16rem; letter-spacing: -0.03em; white-space: nowrap; }
+
+/* ══ segmented nav ══════════════════════════════════════════════════════════
+
+  ⭐ One recessed track with the current segment raised out of it. The three destinations are one
+  choice, so they read as one control rather than three separate links, and it gives the header a
+  centre of gravity that an evenly spaced row never has.
+*/
+.seg {
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 4px; border-radius: var(--pill);
+  background: var(--paper-2);
+  border: 1px solid var(--edge);
+}
+.seg__item {
+  padding: 8px 18px; border-radius: var(--pill);
+  font-size: 0.84rem; font-weight: 500; white-space: nowrap;
+  color: var(--text-dim);
+  border: 1px solid transparent;
+  transition: color 0.16s, background 0.16s, border-color 0.16s;
+}
+.seg__item:hover { color: var(--text); }
+/* ⚠ The raised segment gets a border AND a shadow. On a light track a fill alone is too close to
+   the track to read as raised, which is the whole point of the control. */
+.seg__item.is-on {
+  color: var(--text); font-weight: 600;
+  background: var(--panel);
+  border-color: var(--edge-lit);
+  box-shadow: 0 1px 2px rgba(20, 23, 15, 0.06);
+}
+.hdr__x {
+  display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--pill);
+  color: var(--text); transition: background 0.16s;
+}
+.hdr__x:hover { background: var(--paper-2); }
+.hdr__x svg { width: 15px; height: 15px; fill: currentColor; }
+
+/* ══ buttons ════════════════════════════════════════════════════════════════ */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 20px; border-radius: var(--pill);
+  border: 1px solid var(--edge-lit); background: var(--panel); color: var(--text);
+  font-size: 0.84rem; font-weight: 600; letter-spacing: 0.01em;
+  cursor: pointer; white-space: nowrap; min-height: 44px;
+  transition: background 0.16s, border-color 0.16s, color 0.16s, transform 0.1s;
+}
+.btn:hover:not(:disabled) { background: var(--paper-2); border-color: var(--edge-lit); }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ⚠ Hover LIGHTENS on the dark fill and DEEPENS on the accent. On a dark object, going darker reads
+   as disabled; on a light one, going lighter does. Same lesson, opposite directions. */
+.btn--ink { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+.btn--ink:hover:not(:disabled) { background: var(--ink-2); border-color: var(--ink-2); color: var(--on-ink); }
+
+.btn--accent { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn--accent:hover:not(:disabled) { background: var(--accent-deep); border-color: var(--accent-deep); }
+
+.btn--lg { padding: 14px 26px; font-size: 0.94rem; min-height: 52px; }
+.btn--sm { padding: 8px 15px; font-size: 0.78rem; min-height: 40px; }
+
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  padding: 9px 17px; border-radius: var(--pill); min-height: 40px;
+  border: 1px solid var(--edge-lit); background: var(--panel); color: var(--text-dim);
+  font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  transition: background 0.16s, color 0.16s, border-color 0.16s;
+}
+.chip:hover { background: var(--paper-2); color: var(--text); }
+.chip[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+
+/* ══ panels ═════════════════════════════════════════════════════════════════ */
+
+.panel { background: var(--panel); border: 1px solid var(--edge); border-radius: var(--r); box-shadow: var(--lift); }
+.panel--pad { padding: 26px; }
+.panel--flat { box-shadow: none; }
+
+/* ══ hero ═══════════════════════════════════════════════════════════════════
+
+  ## ⭐⭐ THE IDEA: A HALLMARK, NOT A MASCOT
+
+  Silver is hallmarked. A tiny punch struck into the metal that permanently certifies what it is,
+  who made it, and where. That is precisely what this product does to a token, and it is where the
+  whole page comes from: a centred, struck, certificate-like composition rather than a character on
+  a coloured shape with speech bubbles around it.
+
+  ➤ So the mark is SMALL and precise, the type is centred, the rules are hairlines, and the one
+  large object on the page is the split itself. The mechanic is the hero, because the mechanic is
+  the only thing here worth looking at.
+*/
+
+/* ⚠ The concentric hairlines that used to sit behind this (a `::before` of engine turning) are
+   gone at the operator's request. `position: relative` stays because `.hero__in` still raises
+   itself above it; `overflow: hidden` went with the oversized pseudo element it was clipping. */
+.hero {
+  padding: 48px 0 68px;
+  position: relative;
+  text-align: center;
+}
+
+.hero__in { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+
+/* ⭐ The mark sits straight on the page at size. At 200px the chrome carries its own edge and a
+   plate behind it only competed with it; the roundel was doing work the object can do itself. */
+.hero__mark {
+  width: min(230px, 46vw); height: min(230px, 46vw);
+  margin: 0 auto 22px;
+}
+
+.hero h1 { margin: 0 auto 20px; max-width: 15ch; }
+.hero__cta { display: flex; gap: 11px; flex-wrap: wrap; justify-content: center; }
+
+/*
+  ⭐⭐ THE ONE BIG OBJECT ON THE PAGE IS THE SPLIT ITSELF. A launchpad's hero is usually a picture of
+  a thing; here the thing is a rule about money, and drawing the rule at full width says more than
+  any illustration could. It is also the same component that appears on the form and on every row,
+  so the page's largest object and its smallest are the same promise.
+*/
+
+/* ══ stat strip ═════════════════════════════════════════════════════════════ */
+
+/*
+  ⭐ The assay strip. Marks in a row divided by hairlines, the way the marks on the back of a piece
+  of silver run in a line. Cards in a row is what every other site does, and three boxes with
+  shadows is exactly the look this redesign is getting away from.
+*/
+.stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  margin-top: 62px; border-top: 1px solid var(--edge); border-bottom: 1px solid var(--edge);
+}
+.stat { padding: 26px 30px; text-align: center; }
+.stat + .stat { border-left: 1px solid var(--edge); }
+.stat__k {
+  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: 12px;
+}
+.stat__v { font-family: var(--font-display); font-weight: 700; font-size: 1.95rem; line-height: 1; letter-spacing: -0.03em; }
+.stat__v small { font-size: 0.88rem; color: var(--text-dim); margin-left: 2px; font-weight: 600; }
+
+/* ══ the split bar ══════════════════════════════════════════════════════════
+
+  ⭐⭐ The whole product in one object: how much of every fee belongs to the charity. It appears in
+  the launch form where a creator sets it and again on every card where a buyer reads it, identical
+  both times, so the promise made and the promise displayed are visibly the same promise.
+*/
+.split {
+  height: 34px; border-radius: var(--pill); overflow: hidden; display: flex;
+  background: var(--paper-2); border: 1px solid var(--edge);
+}
+.split__a {
+  background: var(--ink); color: var(--on-ink);
+  display: flex; align-items: center; padding: 0 14px;
+  font-size: 0.76rem; font-weight: 600; white-space: nowrap; overflow: hidden;
+  transition: width 0.22s cubic-bezier(0.3, 0, 0.2, 1);
+}
+.split__b {
+  flex: 1; display: flex; align-items: center; justify-content: flex-end; padding: 0 14px;
+  font-size: 0.76rem; font-weight: 500; color: var(--text-dim); white-space: nowrap; overflow: hidden;
+}
+.split--sm { height: 26px; }
+.split--sm .split__a, .split--sm .split__b { font-size: 0.68rem; padding: 0 10px; }
+
+/* ── the multi-part bar ─────────────────────────────────────────────────────
+   Used when a launch's remainder is cut again, so the bar states where every part actually goes
+   rather than lumping it under "creator". Three tones off the SAME ink, not three hues: this is one
+   fee being divided, and a traffic-light palette would read as three unrelated things. */
+.split__seg {
+  display: flex; align-items: center; padding: 0 14px;
+  font-size: 0.76rem; font-weight: 600; white-space: nowrap; overflow: hidden;
+  transition: width 0.22s cubic-bezier(0.3, 0, 0.2, 1);
+}
+.split__seg--charity { background: var(--accent-deep); color: var(--on-accent); }
+/*
+  ⭐ Green for what is given, clay for what is destroyed, bone for what is kept — three warm tones
+  from one family rather than a dark/light ramp, so the bar reads as three KINDS of destination
+  instead of three sizes of the same thing.
+
+  ⛔ INK TEXT ON BOTH FILLS, NOT WHITE. These are light tints: white on `--accent-deep` measures
+  about 1.9:1 and on `--clay` about 2.1:1, which is exactly the eyeballed-contrast mistake the
+  palette comment above warns about. Ink on them is roughly 9:1 and 8:1. Measured, not judged.
+*/
+.split__seg--burn { background: var(--clay); color: var(--on-accent); font-weight: 700; }
+.split__seg--creator { background: transparent; color: var(--text-dim); font-weight: 500; justify-content: flex-end; }
+/* ⛔ The last segment takes the remaining space rather than its exact percentage, so rounding can
+   never leave a hairline of background showing at the right edge of a full bar. */
+.split__seg:last-child { flex: 1; }
+.split--sm .split__seg { font-size: 0.68rem; padding: 0 10px; }
+
+/* ══ steps ══════════════════════════════════════════════════════════════════ */
+
+/*
+  ⭐ Ruled clauses, not three floating cards. Three equal boxes with shadows is the default shape of
+  every landing page; a numbered clause under a hairline is what a certificate does, and it also
+  lets the third one be longer than the others without leaving two boxes with dead space.
+*/
+.steps { border-top: 1px solid var(--ink); }
+.step {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 300px) minmax(0, 1fr);
+  gap: 28px; align-items: start;
+  padding: 30px 4px;
+  border-bottom: 1px solid var(--edge);
+}
+.step__n {
+  font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+  color: var(--text-faint); padding-top: 3px; letter-spacing: 0.04em;
+}
+.step h3 { margin: 0; padding-top: 1px; }
+.step p { font-size: 0.93rem; margin: 0; max-width: 62ch; }
+
+@media (max-width: 860px) {
+  .step { grid-template-columns: 46px minmax(0, 1fr); gap: 16px; }
+  .step h3 { grid-column: 2; margin-bottom: 8px; }
+  .step p { grid-column: 2; }
+  /* ⚠ The wrapper needs the same column as the paragraphs it replaced, or it sits under the
+     number on a narrow screen — the same failure this element exists to fix, one breakpoint down. */
+  .step__body { grid-column: 2; }
+}
+
+/* ══ forms ══════════════════════════════════════════════════════════════════ */
+
+.field { margin-bottom: 20px; }
+.field__l { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; }
+.field__h { font-size: 0.79rem; color: var(--text-faint); margin: 7px 0 0; line-height: 1.5; }
+.field__err { font-size: 0.79rem; color: var(--danger); margin: 7px 0 0; font-weight: 500; }
+
+.input, .select, .textarea {
+  width: 100%; min-height: 46px; padding: 12px 15px;
+  background: var(--panel); border: 1px solid var(--edge-lit); border-radius: var(--r-sm);
+  color: var(--text); font-family: inherit; font-size: 0.94rem;
+  transition: border-color 0.16s, box-shadow 0.16s;
+}
+.input:focus, .select:focus, .textarea:focus {
+  outline: none; border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(207, 233, 176, 0.7);
+}
+.input::placeholder, .textarea::placeholder { color: #9aa192; }
+.input.mono, .textarea.mono { font-family: var(--font-mono); font-size: 0.85rem; }
+.textarea { resize: vertical; min-height: 82px; }
+.select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text) 50%), linear-gradient(135deg, var(--text) 50%, transparent 50%);
+  background-position: calc(100% - 19px) center, calc(100% - 14px) center;
+  background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 38px;
+}
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.rule { border: 0; border-top: 1px solid var(--edge); margin: 28px 0; }
+
+/*
+  🔴🔴 THE HIT AREA AND THE TRACK ARE DIFFERENT THINGS, AND STYLING ONLY THE TRACK IS THE BUG.
+
+  Setting `height: 4px` on the input makes the ELEMENT four pixels tall. It looks perfect, since the
+  track is meant to be a hairline, and on a phone the charity split, the single most important
+  control on this site, becomes a 4px target nobody can grab. It measured 4px; it did not look 4px.
+
+  ➤ The input is 44px of invisible hit area and the hairline is painted by the track pseudo-element.
+  The thumb is then centred by hand, because a thumb positions against the track box, not the input.
+*/
+input[type='range'] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 44px; background: transparent; outline: none; margin: 2px 0 0; cursor: pointer;
+}
+input[type='range']::-webkit-slider-runnable-track { height: 6px; border-radius: var(--pill); background: var(--paper-2); border: 1px solid var(--edge); }
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 24px; height: 24px; margin-top: -10px;
+  border-radius: 50%; background: var(--ink); border: 3px solid var(--panel);
+  cursor: pointer; box-shadow: 0 2px 8px -2px rgba(20, 23, 15, 0.5);
+}
+input[type='range']::-moz-range-track { height: 6px; border-radius: var(--pill); background: var(--paper-2); border: 1px solid var(--edge); }
+input[type='range']::-moz-range-thumb {
+  width: 20px; height: 20px; border-radius: 50%; cursor: pointer;
+  background: var(--ink); border: 3px solid var(--panel);
+}
+
+/* ══ launch layout ══════════════════════════════════════════════════════════ */
+
+.launch__grid { margin-top: 8px; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+.aside { position: sticky; top: 92px; display: flex; flex-direction: column; gap: 14px; }
+
+.kv { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; font-size: 0.87rem; }
+.kv + .kv { border-top: 1px solid var(--edge); }
+.kv__k { color: var(--text-dim); }
+.kv__v { font-weight: 600; text-align: right; }
+.kv__v.mono { font-size: 0.79rem; font-weight: 500; }
+.kv--loud .kv__v { background: var(--accent); padding: 2px 9px; border-radius: var(--pill); }
+
+.claims { display: grid; gap: 16px; }
+.claim { display: flex; gap: 13px; align-items: flex-start; }
+.claim__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-deep); margin-top: 8px; flex: none; }
+.claim p { margin: 0; font-size: 0.91rem; }
+.claim strong { color: var(--text); font-weight: 700; }
+
+/* ══ the ledger ═════════════════════════════════════════════════════════════
+
+  ⭐⭐ A REGISTER, NOT A SHOP. Cards in a grid sell things: big art, a price badge, a hover lift. What
+  this section actually is, is a record of who has been paid, and a record wants ruled rows, aligned
+  figures and no ornament. It reads down the page rather than across it, which is also how somebody
+  checking a claim wants to read it.
+
+  ⚠ What remains of the old ruled register. The rows themselves are cards now (see `.tgrid`), so
+  only the pieces still used elsewhere survive: `.ledger` rules the fee tables on a token page, and
+  the three `.lrow__*` below dress the token in a claim row.
+*/
+
+.ledger { border-top: 1px solid var(--ink); }
+
+.lrow__art {
+  width: 34px; height: 34px; border-radius: 8px; flex: none; object-fit: cover;
+  background: var(--accent-hi); border: 1px solid var(--edge);
+}
+.lrow__name { font-weight: 600; font-size: 0.94rem; line-height: 1.2; }
+.lrow__sym { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-faint); }
+
+.empty {
+  text-align: center; padding: 60px 24px; color: var(--text-dim);
+  border-bottom: 1px solid var(--edge);
+}
+
+@media (max-width: 900px) {
+  /* ⚠ The head disappears rather than shrinking: a six column header at 380px is six unreadable
+     stubs, and the row below carries its own labels once it stacks. */
+  .ledger__head { display: none; }
+            }
+
+/* ══ banner ═════════════════════════════════════════════════════════════════ */
+
+.banner {
+  border: 1px solid var(--edge); background: var(--panel);
+  border-radius: var(--r); padding: 15px 19px;
+  font-size: 0.88rem; color: var(--text-dim);
+}
+.banner strong { color: var(--text); font-weight: 700; }
+
+/* ══ footer ═════════════════════════════════════════════════════════════════ */
+
+.ftr { border-top: 1px solid var(--edge); padding: 60px 0 44px; background: var(--paper-2); }
+.ftr__grid { display: grid; grid-template-columns: minmax(0, 1.7fr) repeat(3, minmax(0, 1fr)); gap: 36px; }
+.ftr__brand { display: flex; align-items: center; gap: 11px; margin-bottom: 15px; }
+.ftr h4 { font-family: var(--font-ui); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 14px; }
+.ftr__links { display: flex; flex-direction: column; gap: 4px; font-size: 0.88rem; }
+.ftr__links a, .ftr__links span { color: var(--text-dim); padding: 5px 0; }
+.ftr__links a:hover { color: var(--text); }
+.ftr__legal { margin-top: 46px; padding-top: 26px; border-top: 1px solid var(--edge); font-size: 0.79rem; color: var(--text-faint); line-height: 1.68; max-width: 82ch; }
+
+/* ══ modal ══════════════════════════════════════════════════════════════════ */
+
+.overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(20, 23, 15, 0.4); backdrop-filter: blur(5px);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.modal { width: 100%; max-width: 400px; padding: 26px; }
+.modal h3 { margin-bottom: 18px; }
+/* ⛔ The connect dialog's own rules live further down, in one place. There WAS a second, earlier
+   copy of `.wlist`/`.wbtn` here: same specificity, so the later block won every property it
+   happened to name and this one kept the ones it did not — `font-weight: 600` was still reaching
+   `.wbtn` from a block nobody thought was live. Editing the first copy did nothing visible, which
+   is exactly the shape of the CSS bug this repo has hit before. */
+
+/* ══ responsive ═════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1080px) {
+  .ftr__grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 940px) {
+  .launch__grid { grid-template-columns: 1fr; }
+  .aside { position: static; }
+  .steps { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+  section { padding: 64px 0; }
+  .wrap { padding: 0 18px; }
+  .hdr__in { padding: 0 18px; gap: 12px; }
+  .row { grid-template-columns: 1fr; }
+  .ftr__grid { grid-template-columns: 1fr; gap: 26px; }
+  .cards { grid-template-columns: 1fr; }
+
+  /* ⚠ The small variants are 40px by design at desktop and that is under the touch minimum. Found
+     by measuring at 390px, not by looking: 40px and 44px are indistinguishable in a screenshot. */
+  .btn--sm, .chip { min-height: 44px; }
+  .hdr__x { width: 44px; height: 44px; }
+  /* Footer links measured 33px: 23px of line box plus 5px of padding each side. */
+  .ftr__links a, .ftr__links span { padding: 11px 0; }
+  /* ⚠ The card's "Details" link measured under the touch minimum. Padded rather than made bigger,
+     so the row keeps its proportions and only the target grows. */
+  .ccard__foot a { padding: 12px 0; }
+  .ccard__foot { padding-top: 4px; }
+}
+
+/* ══ charity picker ═════════════════════════════════════════════════════════
+
+  ⭐ The most consequential control on the site: what it produces is written into a contract that
+  has no setter. So it is given more room, more explanation and a confirmation step than anything
+  else here, and it deliberately reads slower than the rest of the form.
+*/
+
+.pick {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 30;
+  background: var(--panel); border: 1px solid var(--edge-lit); border-radius: var(--r);
+  box-shadow: 0 18px 44px -20px rgba(20, 23, 15, 0.42);
+  max-height: 336px; overflow-y: auto;
+}
+.pick__row {
+  display: block; width: 100%; text-align: left; background: none; border: 0;
+  padding: 12px 16px; cursor: pointer; border-bottom: 1px solid var(--edge);
+  transition: background 0.14s;
+}
+.pick__row:hover { background: var(--paper-2); }
+.pick__name { display: block; font-weight: 600; font-size: 0.92rem; }
+.pick__cause { display: block; font-size: 0.8rem; color: var(--text-dim); margin-top: 2px; line-height: 1.4; }
+.pick__none { padding: 16px; font-size: 0.86rem; color: var(--text-dim); line-height: 1.5; }
+.pick__foot {
+  padding: 11px 16px; font-size: 0.74rem; color: var(--text-faint);
+  background: var(--paper-2); position: sticky; bottom: 0;
+}
+
+.pickcard {
+  margin-top: 12px; padding: 16px; border-radius: var(--r);
+  border: 1px solid var(--edge); background: var(--paper-2);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.pickcard__name { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; letter-spacing: -0.02em; }
+.pickcard__cause { font-size: 0.86rem; margin: 3px 0 0; }
+
+.verdict {
+  margin-top: 14px; padding: 16px; border-radius: var(--r);
+  border: 1px solid var(--edge); background: var(--panel);
+}
+.verdict--stop { border-color: var(--danger); }
+.verdict__k {
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: 9px;
+}
+
+/* ⭐ Four character groups. An address compared as one 42 character run is compared by nobody; in
+   groups a human keeps their place and actually spots a changed character. */
+.chunks { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.chunks span {
+  font-family: var(--font-mono); font-size: 0.86rem; font-weight: 500;
+  padding: 4px 8px; border-radius: 6px; background: var(--paper-2); border: 1px solid var(--edge);
+}
+
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+.check { display: flex; gap: 11px; align-items: flex-start; font-size: 0.86rem; }
+.check b { font-weight: 600; display: block; }
+.check__detail { display: block; color: var(--text-dim); font-size: 0.82rem; line-height: 1.5; margin-top: 3px; }
+/* ⚠ Never colour alone. Each state also has its own glyph, because a red dot and a green dot are
+   the same dot to a red-green colourblind reader, and this is a payment destination. */
+.check__mark {
+  width: 18px; height: 18px; border-radius: 50%; flex: none; margin-top: 1px;
+  display: grid; place-items: center; font-size: 11px; font-weight: 700; color: var(--panel);
+}
+.check--ok .check__mark { background: var(--good); }
+.check--ok .check__mark::after { content: '\2713'; }
+.check--warn .check__mark { background: #9a7b1f; }
+.check--warn .check__mark::after { content: '!'; }
+.check--unknown .check__mark { background: var(--text-faint); }
+.check--unknown .check__mark::after { content: '?'; }
+.check--stop .check__mark { background: var(--danger); }
+.check--stop .check__mark::after { content: '\00d7'; }
+
+.confirm {
+  display: flex; gap: 11px; align-items: flex-start; margin-top: 16px; padding-top: 15px;
+  border-top: 1px solid var(--edge); font-size: 0.85rem; line-height: 1.5; cursor: pointer;
+}
+.confirm input { width: 19px; height: 19px; margin: 1px 0 0; flex: none; accent-color: var(--ink); cursor: pointer; }
+
+/* ══ profile menu ═══════════════════════════════════════════════════════════ */
+
+.profile { position: relative; }
+.profile__trigger { gap: 8px; }
+.profile__trigger.is-open { background: var(--paper-2); border-color: var(--sage); }
+.profile__dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--good); flex: none;
+}
+/* ⚠ The dot is the chain state, and it is the only thing in the header that says so. A wallet on
+   the wrong network reads every value as empty, which otherwise looks like an empty site. */
+.profile__trigger.is-warn .profile__dot { background: var(--danger); }
+
+.profile__menu {
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: 60;
+  min-width: 250px; padding: 6px;
+  background: var(--panel); border: 1px solid var(--edge-lit); border-radius: var(--r);
+  box-shadow: 0 18px 44px -20px rgba(20, 23, 15, 0.42);
+}
+.profile__head {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 10px 12px 12px; margin-bottom: 4px; border-bottom: 1px solid var(--edge);
+}
+.profile__addr { font-size: 0.82rem; font-weight: 500; }
+.profile__copy {
+  background: none; border: 0; cursor: pointer; padding: 4px 6px; border-radius: 6px;
+  font-size: 0.74rem; font-weight: 600; color: var(--text-dim);
+}
+.profile__copy:hover { background: var(--paper-2); color: var(--text); }
+.profile__warn {
+  margin: 4px 6px 8px; padding: 9px 11px; border-radius: 8px;
+  background: var(--paper-2); font-size: 0.78rem; line-height: 1.45; color: var(--text-dim);
+}
+.profile__item {
+  display: block; width: 100%; text-align: left; background: none; border: 0;
+  padding: 10px 12px; border-radius: 8px; cursor: pointer;
+  font-size: 0.87rem; font-weight: 500; color: var(--text-dim);
+}
+.profile__item:hover { background: var(--paper-2); color: var(--text); }
+.profile__item--danger { color: var(--danger); }
+.profile__item--danger:hover { background: rgba(160, 60, 34, 0.07); color: var(--danger); }
+.profile__sep { height: 1px; background: var(--edge); margin: 6px 4px; }
+
+/* ══ wallet dialog ══════════════════════════════════════════════════════════ */
+
+.overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(20, 23, 15, 0.42); backdrop-filter: blur(6px);
+  /* ⚠ Aligned to the top on short viewports rather than centred. A centred dialog taller than the
+     window has its head cut off and cannot be scrolled to. */
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: max(12vh, 24px) 20px 24px;
+  overflow-y: auto;
+}
+.modal {
+  width: 100%; max-width: 380px; padding: 20px;
+  background: var(--panel); border: 1px solid var(--edge-lit); border-radius: var(--r);
+  box-shadow: 0 30px 70px -30px rgba(20, 23, 15, 0.5);
+}
+/* ⚠ The close button is taken OUT of the flow rather than balanced with a spacer. Centring the
+   title in a flex row that also holds a 32px button centres it against the remaining space, so it
+   sits visibly left of centre; only removing the button from the flow centres it against the
+   dialog. */
+.modal__head { position: relative; display: flex; align-items: center; justify-content: center; min-height: 32px; margin-bottom: 18px; }
+.modal__head h3 { font-size: 1.1rem; text-align: center; }
+.modal__x {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 32px; height: 32px; border-radius: 50%; border: 0; background: none;
+  display: grid; place-items: center; cursor: pointer; color: var(--text-dim);
+}
+.modal__x:hover { background: var(--paper-2); color: var(--text); }
+.modal__x svg { width: 15px; height: 15px; }
+.modal__note { font-size: 0.87rem; margin-bottom: 14px; }
+
+.wlist { display: flex; flex-direction: column; gap: 6px; }
+.wbtn {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 54px;
+  padding: 10px 12px; border-radius: 10px;
+  border: 1px solid transparent; background: var(--paper-2);
+  cursor: pointer; text-align: left;
+  transition: border-color 0.14s, background 0.14s;
+  /* ⚠ An anchor in this list must not look like a link. The wallet rows are <button>s and the
+     account rows are <a>s, for the good reason that OAuth is a page navigation — but that is our
+     problem, not something the reader should be able to see. */
+  text-decoration: none; color: inherit;
+}
+.wbtn:hover { border-color: var(--ink); background: var(--panel); }
+.wbtn:disabled { opacity: 0.5; cursor: wait; }
+/* 🔴 An explicit size. A wallet icon arrives at whatever resolution its extension ships, one was
+   256px, and markup that only exists inside an open dialog is never in a screenshot, so a missing
+   rule here stays invisible until somebody opens it. */
+.wbtn img, .wbtn__blank {
+  width: 30px; height: 30px; border-radius: 8px; flex: none; object-fit: contain;
+  background: var(--edge);
+}
+.wbtn__name { font-weight: 600; font-size: 0.92rem; flex: 1; min-width: 0; }
+.wbtn__go { font-size: 0.76rem; font-weight: 600; color: var(--text-faint); }
+.wbtn:hover .wbtn__go { color: var(--text); }
+/* ⭐ The provider mark in the SAME 30px box a wallet's icon gets, so the two lists line up down one
+   edge instead of reading as two different kinds of row. */
+.wbtn__mark {
+  width: 30px; height: 30px; border-radius: 8px; flex: none;
+  display: grid; place-items: center; background: var(--edge); color: var(--text);
+}
+.wbtn__mark .pico { display: grid; place-items: center; }
+.wbtn__mark svg { width: 15px; height: 15px; }
+
+/* ── the dialog's two sections ── */
+.wsec {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-faint); margin: 0 0 8px 2px;
+}
+.wsec__rule { height: 1px; background: var(--edge); margin: 18px 0 16px; }
+
+/* ══ the launch result ══════════════════════════════════════════════════════
+   ⚠ `margin-inline: auto` is the half that was missing: the card had a max-width and no margins, so
+   it sat hard left under a heading that is centred. */
+.launched { max-width: 640px; margin-inline: auto; }
+.launched__note {
+  margin: 18px auto 0; font-size: 0.88rem; text-align: center;
+  /* ⚠ A measure. Centred text running the full width of the card is hard to read back to. */
+  max-width: 46ch;
+}
+.launched__again { display: block; margin: 16px auto 0; }
+
+/* ══ token images ═══════════════════════════════════════════════════════════ */
+
+.timg { display: block; object-fit: cover; background: var(--paper-2); }
+.timg--fallback { display: grid; place-items: center; background: var(--accent-hi); }
+.timg--fallback img { width: 58%; height: 58%; object-fit: contain; opacity: 0.75; }
+
+/* ⭐ The preview and the drop zone are the SAME height, set once on the row rather than twice in
+   two places that then drift apart. `align-items: stretch` makes the drop zone follow the square
+   thumbnail, so there is one number to change and they cannot disagree. */
+.logorow { display: flex; gap: 14px; align-items: stretch; --logo-h: 116px; }
+.logorow .timg, .logorow__img {
+  width: var(--logo-h); height: var(--logo-h);
+  border-radius: 14px; border: 1px solid var(--edge); flex: none;
+}
+.logorow > div { display: flex; flex-direction: column; }
+.logorow .drop { flex: 1; min-height: var(--logo-h); }
+
+/* ══ token page ═════════════════════════════════════════════════════════════ */
+
+.tok { padding-top: 40px; }
+.tok__back {
+  display: inline-block; font-size: 0.82rem; font-weight: 500; color: var(--text-dim);
+  margin-bottom: 26px;
+}
+.tok__back:hover { color: var(--text); }
+.tok__back::before { content: '\2190'; margin-right: 8px; }
+
+.tok__head { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.tok__art, .tok__head .timg {
+  width: 72px; height: 72px; border-radius: 16px; border: 1px solid var(--edge); flex: none;
+}
+.tok__name { font-size: clamp(1.9rem, 3.4vw, 2.7rem); letter-spacing: -0.032em; line-height: 1.05; }
+/* ⚠ The margin moved to the bottom when the ticker moved above the name. */
+.tok__sym { font-size: 0.86rem; color: var(--text-faint); margin-bottom: 3px; }
+.tok__badges { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+/* ⚠⚠ THESE HAD NO CSS AT ALL. Three badges on the token page carried `.tag` and `.tag--live` and
+   nothing in this file matched either, so they rendered as three runs of naked inline text with the
+   spaces between them as the only separator. It survived because the token page only exists for a
+   launched token, and until now there were none to look at.
+   ⛔ The exemption chips on the launch form are `.xtag`, deliberately: a bare `.tag` rule written
+   for those would have landed here, on a page that change had nothing to do with. */
+.tag {
+  display: inline-flex; align-items: center;
+  padding: 5px 12px; border-radius: var(--pill);
+  font-size: 0.76rem; font-weight: 600; white-space: nowrap;
+  background: var(--paper-2); border: 1px solid var(--edge); color: var(--text-dim);
+}
+/* ⭐ The one that says WHO is paid gets the accent. It is the whole claim of the page, and the other
+   two are context for it. */
+.tag--live {
+  background: var(--accent); border-color: var(--accent-deep); color: var(--on-accent);
+}
+.tok__desc { margin-top: 20px; max-width: 68ch; font-size: 1rem; }
+.tok__split { margin-top: 26px; max-width: 620px; }
+
+.figs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 40px;
+  border-top: 1px solid var(--edge); border-bottom: 1px solid var(--edge); }
+.fig { padding: 24px 26px; }
+.fig + .fig { border-left: 1px solid var(--edge); }
+.fig__k { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 11px; }
+.fig__v { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.fig__v small { font-size: 0.8rem; color: var(--text-dim); margin-left: 3px; font-weight: 600; letter-spacing: 0; }
+.fig__n { font-size: 0.76rem; color: var(--text-faint); margin-top: 9px; line-height: 1.45; }
+
+.tok__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.trow {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  padding: 13px 4px; border-bottom: 1px solid var(--edge); font-size: 0.88rem;
+}
+.trow__k { color: var(--text-dim); }
+.trow__v { font-weight: 600; text-align: right; }
+.trow__v a { font-weight: 500; }
+.trow__v a:hover { color: var(--sage-deep); text-decoration: underline; }
+
+/* ⚠ Three tiles now, so the track count is stated rather than inherited from the four-column
+   default — at `repeat(4, 1fr)` three tiles left a quarter of the row empty and the group read as
+   though a fourth had failed to load. */
+.figs--3 { grid-template-columns: repeat(3, 1fr); }
+
+@media (max-width: 1000px) {
+  .figs { grid-template-columns: 1fr 1fr; }
+  /* ⚠ Stated again inside the query: `.figs--3` is the same specificity as `.figs` and comes
+     later in the file, so without this it would win here and keep three columns on a phone. */
+  .figs--3 { grid-template-columns: 1fr 1fr; }
+  .fig:nth-child(3) { border-left: 0; }
+  .fig:nth-child(n+3) { border-top: 1px solid var(--edge); }
+  .tok__cols { grid-template-columns: 1fr; gap: 34px; }
+}
+@media (max-width: 620px) {
+  .figs, .figs--3 { grid-template-columns: 1fr; }
+  .fig + .fig { border-left: 0; border-top: 1px solid var(--edge); }
+  .tok__badges { margin-left: 0; width: 100%; }
+}
+
+/* ══ header, small screens ══════════════════════════════════════════════════ */
+
+@media (max-width: 1040px) {
+  .hdr__in { grid-template-columns: auto 1fr auto; }
+  .seg { justify-self: center; }
+  .seg__item { padding: 8px 13px; font-size: 0.8rem; }
+  .hdr__name { display: none; }
+}
+@media (max-width: 720px) {
+  .hdr__in { grid-template-columns: auto auto; row-gap: 0; height: auto; padding: 12px 18px; }
+  /* ⚠ The nav wraps to its own full width row rather than shrinking to unreadable stubs. */
+  .seg { grid-column: 1 / -1; justify-self: stretch; margin-bottom: 12px; order: 3; }
+  .seg__item { flex: 1; text-align: center; padding: 10px 8px; min-height: 44px; display: grid; place-items: center; }
+}
+
+/* ══ pages ══════════════════════════════════════════════════════════════════ */
+
+.page { padding-top: 52px; }
+
+.sect + .sect { margin-top: 54px; }
+.sect__head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap; margin-bottom: 18px;
+}
+.sect__title {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.5rem;
+  letter-spacing: -0.028em; display: flex; align-items: center; gap: 11px;
+}
+/* ⚠ The count is of the SECTION before any search, so a search matching nothing still shows how
+   many exist rather than reading as an empty launchpad. */
+.sect__count {
+  font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600;
+  padding: 3px 10px; border-radius: var(--pill);
+  background: var(--paper-2); border: 1px solid var(--edge); color: var(--text-dim);
+}
+.sect__blurb { font-size: 0.88rem; margin: 6px 0 0; }
+
+/* ══ upload ═════════════════════════════════════════════════════════════════ */
+
+.drop {
+  border: 1px dashed var(--edge-lit); border-radius: var(--r-sm);
+  background: var(--paper-2);
+  padding: 18px 16px; min-height: 62px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  text-align: center; cursor: pointer;
+  transition: border-color 0.16s, background 0.16s;
+}
+.drop:hover, .drop:focus-visible { border-color: var(--ink); background: var(--panel); }
+.drop.is-over { border-color: var(--ink); border-style: solid; background: var(--accent-hi); }
+.drop.is-busy { cursor: wait; opacity: 0.7; }
+.drop__t { font-size: 0.88rem; font-weight: 600; }
+.drop__s { font-size: 0.77rem; color: var(--text-faint); }
+
+/* ══ chosen charity ═════════════════════════════════════════════════════════ */
+
+.chosen {
+  border: 1px solid var(--edge-lit); border-radius: var(--r); background: var(--panel);
+  padding: 16px 18px;
+}
+.chosen__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.chosen__name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; letter-spacing: -0.02em; }
+.chosen__cause { font-size: 0.86rem; margin: 4px 0 0; }
+.chosen__addr {
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--edge);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.chosen__addr .mono { font-size: 0.8rem; word-break: break-all; }
+.chosen__addr a { font-size: 0.78rem; color: var(--text-faint); }
+.chosen__addr a:hover { color: var(--text); text-decoration: underline; }
+
+.pick__row--other { border-bottom: 0; background: var(--paper-2); }
+.pick__row--other:hover { background: var(--edge); }
+
+.chosen__assets {
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--edge);
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.chosen__assetk { font-size: 0.8rem; color: var(--text-dim); }
+.chosen__assets + .chosen__addr { border-top: 0; padding-top: 12px; margin-top: 0; }
+.pick__name { display: flex; align-items: center; gap: 9px; }
+.pick__assets {
+  font-family: var(--font-mono); font-size: 0.64rem; font-weight: 500; letter-spacing: 0.04em;
+  color: var(--text-faint); padding: 2px 7px; border-radius: var(--pill);
+  background: var(--paper-2); border: 1px solid var(--edge);
+}
+
+.chosen__logo, .pick__logo {
+  width: 46px; height: 46px; border-radius: 10px; flex: none; object-fit: contain;
+  background: var(--panel); border: 1px solid var(--edge); padding: 3px;
+}
+.pick__logo { width: 34px; height: 34px; }
+.pick__row { display: flex; gap: 12px; align-items: center; }
+.chosen__meta { font-size: 0.76rem; color: var(--text-faint); margin-top: 3px; }
+.chosen__addr .mono { font-size: 0.72rem; }
+
+/* ══ charities directory ════════════════════════════════════════════════════ */
+
+/* ⚠ The HEADING and the SUBTITLE get their own measures, rather than sharing one 760px box.
+   "Find a cause worth launching for" needs about 820px at the top of its clamp, so a 760px cap
+   dropped the last word onto a line of its own. The subtitle keeps the narrower measure it had,
+   because 760px is a comfortable reading width for a sentence and 940px is not. ⛔ No `nowrap`:
+   the heading still has to wrap on a phone, where one line is not physically possible. */
+.chead { text-align: center; margin: 0 auto 34px; }
+.chead__h {
+  font-size: clamp(2.3rem, 4.6vw, 3.6rem); font-weight: 700; letter-spacing: -0.035em;
+  line-height: 1.02; margin: 0 auto 14px; max-width: 940px;
+}
+.chead__sub { font-size: 1.02rem; margin: 0 auto; max-width: 760px; }
+.chead__sub b { color: var(--text); font-weight: 700; }
+
+.cbar { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 28px; justify-content: center; }
+.cbar .input { max-width: 380px; }
+.chip:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.cgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.ccard {
+  background: var(--panel); border: 1px solid var(--edge); border-radius: var(--r);
+  padding: 18px; display: flex; flex-direction: column; gap: 10px;
+  transition: border-color 0.16s, transform 0.16s, box-shadow 0.16s;
+}
+.ccard:hover { border-color: var(--edge-lit); transform: translateY(-2px); box-shadow: var(--lift); }
+.ccard__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.ccard__logo {
+  width: 52px; height: 52px; border-radius: 10px; object-fit: contain; flex: none;
+  background: var(--paper-2); border: 1px solid var(--edge); padding: 4px;
+}
+.ccard__name { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.25; }
+.ccard__place { font-size: 0.76rem; color: var(--text-faint); margin-top: -4px; }
+/* ⚠ Clamped, not truncated with an ellipsis in JS. Missions run from one line to a paragraph and a
+   grid where every card is a different height reads as broken rather than as varied. */
+.ccard__mission {
+  font-size: 0.85rem; margin: 0; flex: 1;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.ccard__foot {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.76rem; color: var(--text-faint);
+  border-top: 1px solid var(--edge); padding-top: 11px;
+}
+.ccard__foot a:hover { color: var(--text); text-decoration: underline; }
+.ccard__cta { width: 100%; }
+
+/* ⚠ Centred as a block AND as text. `max-width` alone leaves a short note hard against the left
+   edge of a page whose header, search bar and chips are all centred, which reads as misaligned
+   rather than as deliberate. */
+.cnote {
+  margin: 40px auto 0; font-size: 0.78rem; color: var(--text-faint); line-height: 1.6;
+  max-width: 74ch; text-align: center;
+}
+
+/* ══ how it works ═══════════════════════════════════════════════════════════
+
+  ⚠ The page reuses `.steps`, `.claims` and `.panel` rather than restyling them. A visitor arriving
+  from the home page should recognise the ruled step list as the same object, and a second set of
+  near identical rules is how two things that were meant to match slowly stop matching.
+*/
+.hiw { margin-top: 58px; }
+.hiw__h {
+  font-size: clamp(1.5rem, 2.6vw, 2.05rem); letter-spacing: -0.028em;
+  margin-bottom: 14px;
+}
+/* ⚠ A modifier on the section, so only the section asked for is centred. ⛔ The contract table is
+   pulled back to the left inside it: those rows are a three column grid of name, description and
+   address, and centring their cells would leave three ragged columns rather than a table. */
+.hiw--center { text-align: center; }
+.hiw--center .ctrs { text-align: left; }
+
+.hiw__cta { text-align: center; margin-top: 64px; padding-top: 46px; border-top: 1px solid var(--edge); }
+
+/* ⛔ A FOURTH SEGMENT MAKES THE NAV OVERFLOW ON A NARROW PHONE. The items are `nowrap` and stretch
+   to `flex: 1` below 620px, so "How it works" pushed the track past the viewport. Shrinking the
+   type and letting the longest label wrap to two lines keeps every target above 44px. */
+@media (max-width: 620px) {
+  .seg__item { font-size: 0.74rem; padding: 8px 4px; white-space: normal; line-height: 1.15; }
+}
+
+/* ══ claim fees ═════════════════════════════════════════════════════════════ */
+
+.claimbar {
+  display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px;
+}
+.claimbar__fig {
+  flex: 1 1 220px; padding: 16px 18px; border-radius: var(--r);
+  background: var(--panel); border: 1px solid var(--edge);
+}
+.claimbar__k {
+  display: block; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px;
+}
+.claimbar__v {
+  display: block; font-family: var(--font-display); font-weight: 700; font-size: 1.5rem;
+  letter-spacing: -0.028em; font-variant-numeric: tabular-nums;
+}
+
+.claims__list { border-top: 1px solid var(--ink); }
+.claimrow {
+  display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.2fr) auto;
+  gap: 20px; align-items: center;
+  padding: 16px 8px; border-bottom: 1px solid var(--edge);
+}
+.claimrow__tok { display: flex; align-items: center; gap: 12px; min-width: 0; }
+/* ⚠ Label and figure on ONE line, reading left to right, rather than stacked. Two stacked pairs
+   beside each other made four short lines where the eye had to work out which label went with which
+   number; inline, each pair is one phrase. Right aligned and tabular like every other figure here,
+   so the amounts still line up down the column. */
+.claimrow__fig {
+  display: flex; align-items: baseline; justify-content: flex-end; gap: 8px;
+  text-align: right; font-variant-numeric: tabular-nums;
+}
+.claimrow__k { flex: none; font-size: 0.7rem; color: var(--text-faint); }
+.claimrow__v { font-weight: 700; font-size: 0.92rem; white-space: nowrap; }
+
+/* ⚠ The button keeps its own row on a phone rather than being squeezed beside three figures.
+   It is the one control here that signs a transaction, so it never gets a 40px hit area. */
+@media (max-width: 760px) {
+  .claimrow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+  .claimrow__tok { grid-column: 1 / -1; }
+  /* ⚠ Left aligned once they are stacked under the token rather than beside it: a right edge to
+     line up against only exists while they are in their own columns. */
+  .claimrow__fig { justify-content: flex-start; text-align: left; }
+  .claimrow .btn { grid-column: 1 / -1; justify-content: center; min-height: 44px; }
+}
+
+/* ══ the contract table ═════════════════════════════════════════════════════ */
+
+.ctrs { border-top: 1px solid var(--ink); }
+.ctr {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto;
+  gap: 20px; align-items: center;
+  padding: 16px 8px; border-bottom: 1px solid var(--edge);
+}
+.ctr__name { display: block; font-weight: 700; font-size: 0.94rem; }
+.ctr__chain { display: block; font-size: 0.72rem; color: var(--text-faint); margin-top: 2px; }
+.ctr__what { margin: 0; font-size: 0.86rem; }
+.ctr__addr {
+  font-size: 0.78rem; color: var(--text-dim);
+  padding: 6px 12px; border-radius: var(--pill);
+  background: var(--paper-2); border: 1px solid var(--edge); white-space: nowrap;
+}
+.ctr__addr:hover { color: var(--text); border-color: var(--edge-lit); }
+
+@media (max-width: 760px) {
+  .ctr { grid-template-columns: 1fr auto; gap: 10px; }
+  .ctr__what { grid-column: 1 / -1; }
+}
+
+/* ══ tag input (snipe tax exemptions) ═══════════════════════════════════════
+
+  ⚠ The add button sits INSIDE the field's border rather than beside it, so the control reads as one
+  object. A separate button next to an input reads as two, and people type an address and press
+  nothing.
+*/
+.tagin { position: relative; display: flex; align-items: center; }
+.tagin .input { padding-right: 52px; }
+.tagin__add {
+  position: absolute; right: 6px;
+  width: 34px; height: 34px; border-radius: var(--r-sm);
+  display: grid; place-items: center;
+  font-size: 1.15rem; line-height: 1; font-weight: 500;
+  background: var(--paper-2); border: 1px solid var(--edge); color: var(--text-dim);
+  cursor: pointer; transition: background 0.16s, color 0.16s, border-color 0.16s;
+}
+.tagin__add:hover:not(:disabled) { background: var(--accent); color: var(--on-accent); border-color: var(--accent-deep); }
+/* ⚠ Disabled until the draft is a real address, so the button cannot commit half a paste. */
+.tagin__add:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ⛔ `xtag`, NOT `tag`. `.tag` is already the token page's badge class, and a bare `.tag` rule here
+   would have silently restyled three badges on a page this change has nothing to do with. A class
+   name is a global namespace; this stack has had `.row` collide between two components before. */
+.xtags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.xtag {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 8px 5px 11px; border-radius: var(--pill);
+  background: var(--panel); border: 1px solid var(--edge); font-size: 0.78rem;
+}
+.xtag button {
+  border: 0; background: none; cursor: pointer; padding: 0 2px;
+  color: var(--text-faint); font-size: 1rem; line-height: 1;
+}
+.xtag button:hover { color: var(--danger); }
+
+/* ══ the token's contract address, under the hero ═══════════════════════════
+
+  ⭐ ONE OBJECT, AND THE WHOLE OF IT COPIES. There is no separate copy button: a small control beside
+  a 42 character address is a target most people never aim at, and the address is what they are
+  already looking at. Hover lifts the whole strip so it reads as pressable before it is pressed.
+*/
+.ca {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin: 26px auto 0; padding: 10px 16px;
+  border-radius: var(--pill);
+  background: var(--panel); border: 1px solid var(--edge);
+  font: inherit; font-size: 0.8rem; color: var(--text-dim);
+  max-width: 100%; text-align: left;
+}
+.ca__k {
+  flex: none;
+  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+/* ⚠ Allowed to shrink and ellipsize rather than push the strip past the viewport. The full address
+   is what gets copied either way; this is for reading, not for transcribing. */
+.ca__v { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; color: var(--text); }
+
+.ca--btn { cursor: pointer; transition: border-color 0.16s, box-shadow 0.16s, background 0.16s; }
+.ca--btn:hover { border-color: var(--edge-lit); box-shadow: var(--lift); }
+.ca--btn:active { transform: translateY(1px); }
+/* ⚠ The accent confirms, briefly, on the object that was pressed. A toast somewhere else asks the
+   reader to look away from the thing they just clicked to find out whether it worked. */
+.ca--btn.is-copied { background: var(--accent); border-color: var(--accent-deep); }
+.ca--btn.is-copied .ca__k, .ca--btn.is-copied .ca__v { color: var(--on-accent); }
+
+/* ⚠ Reserves no space when empty, so the strip does not resize the moment it is clicked. */
+.ca__say:not(:empty) {
+  flex: none; margin-left: 2px;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; color: var(--on-accent);
+}
+
+/* ⛔ No pointer and no hover when there is nothing to copy. */
+.ca--tba { cursor: default; }
+.ca--tba .ca__v { color: var(--text-faint); letter-spacing: 0.06em; }
+
+/* ══ launch cards ═══════════════════════════════════════════════════════════
+
+  ⭐ The shape Pons's own launchpad uses — square art, name, ticker, market cap — in this site's
+  materials rather than its colours. Theirs is dark tiles on black; this is panel on paper with the
+  same ruled edge as everything else here, so a card reads as part of THIS site at a glance.
+
+  ⚠ `auto-fill`, not `auto-fit`. With `auto-fit` a single launch stretches one card across the full
+  1300px wrap, which looks like a broken layout rather than like one launch. `auto-fill` keeps the
+  track width and leaves the row honestly empty.
+*/
+.tgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(188px, 1fr));
+  gap: 14px;
+}
+
+.tcard {
+  display: flex; flex-direction: column;
+  background: var(--panel); border: 1px solid var(--edge); border-radius: var(--r);
+  overflow: hidden;
+  transition: border-color 0.16s, transform 0.16s, box-shadow 0.16s;
+}
+.tcard:hover {
+  border-color: var(--edge-lit); transform: translateY(-2px); box-shadow: var(--lift);
+}
+
+/* ⚠ A square, held by aspect-ratio rather than a fixed height, so the art scales with the column and
+   every card in a row stays the same height whatever the image is. */
+.tcard__art { position: relative; aspect-ratio: 1; background: var(--paper-2); }
+/* 🔴🔴 NO `display` HERE. `.timg--fallback` is a GRID with `place-items: center`, and a `display:
+   block` on the same element beat it on source order, so a token with no usable image rendered its
+   fallback mark at 58% size in the top left corner of the tile instead of centred. The rule that
+   broke it was the one added to make the image fill the tile. */
+.tcard__img { width: 100%; height: 100%; object-fit: cover; }
+/* ⚠ The fallback is a mark on a tint, not a photo: contained and centred, never cropped. */
+.tcard__art .timg--fallback img { width: 46%; height: 46%; object-fit: contain; }
+.tcard__badge {
+  position: absolute; top: 9px; right: 9px;
+  padding: 4px 10px; border-radius: var(--pill);
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.02em;
+  background: var(--accent); color: var(--on-accent); border: 1px solid var(--accent-deep);
+}
+
+.tcard__body { padding: 12px 13px 11px; display: flex; flex-direction: column; gap: 1px; flex: 1; }
+/* ⚠ Clamped to one line. A long name must not wrap and push the figures below it out of line with
+   the neighbouring cards. */
+.tcard__name {
+  font-family: var(--font-display); font-weight: 700; font-size: 0.98rem;
+  letter-spacing: -0.02em; line-height: 1.2;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tcard__sym { font-size: 0.72rem; color: var(--text-faint); }
+
+.tcard__cap {
+  margin-top: 9px; display: flex; align-items: baseline; gap: 6px;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.18rem;
+  letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+}
+.tcard__capk {
+  font-family: var(--font-ui); font-size: 0.66rem; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-faint);
+}
+.tcard__dash { color: var(--text-faint); font-weight: 500; }
+
+/* ⭐ The charity. The one thing on this card that a Pons card does not have, and the reason this
+   site exists, so it gets the accent rule rather than being another grey line. */
+.tcard__pays {
+  margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--edge);
+  display: flex; flex-direction: column; gap: 2px; flex: 1;
+}
+.tcard__paysk {
+  font-size: 0.64rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+/* ⚠ Two lines, then ellipsis. Charity names run long ("St. Jude Children's Research Hospital") and
+   a card that grows to fit one leaves a ragged grid. */
+.tcard__paysv {
+  font-size: 0.82rem; font-weight: 600; line-height: 1.3; color: var(--text);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+
+/* ⚠ Two across on a phone rather than one. A single column of square art makes each card a whole
+   screen, so browsing a launchpad becomes scrolling past one token at a time. */
+@media (max-width: 560px) {
+  .tgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .tcard__body { padding: 11px 11px 10px; }
+  .tcard__cap { font-size: 1.12rem; }
+}
+
+/* ══ burn ═══════════════════════════════════════════════════════════════════
+
+  ⚠ Only shown to a wallet that holds the token, so most people never see it. It is also the one
+  irreversible action on this site that is not a launch, which is why it arms before it acts rather
+  than firing on a single click.
+*/
+.burn {
+  margin-top: 20px; padding: 16px 18px;
+  background: var(--panel); border: 1px solid var(--edge); border-radius: var(--r);
+}
+.burn__head { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.burn__k {
+  font-size: 0.66rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: 4px;
+}
+.burn__v {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.15rem;
+  letter-spacing: -0.025em; font-variant-numeric: tabular-nums;
+}
+.burn__v small { font-size: 0.78rem; color: var(--text-dim); margin-left: 3px; }
+
+.burn__arm { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--edge); }
+/* ⛔ The warning is read BEFORE the field, not after it. A caution under a button is a caution
+   somebody meets on the way back from having pressed it. */
+.burn__warn { font-size: 0.83rem; color: var(--text-dim); margin: 0 0 12px; }
+.burn__warn strong { color: var(--danger); }
+.burn__row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.burn__row .input { flex: 1; min-width: 140px; }
+.burn__done { margin: 12px 0 0; font-size: 0.86rem; color: var(--text-dim); }
+.burn__done b { color: var(--text); font-variant-numeric: tabular-nums; }
+
+/* ══ donations ══════════════════════════════════════════════════════════════
+   The public record of what this launchpad has actually paid out. Every row
+   carries its own transaction link, so the list is checkable rather than
+   asserted. */
+
+.dtotals { display: flex; gap: 10px; flex-wrap: wrap; }
+.dtotal {
+  background: var(--panel); border: 1px solid var(--edge); border-radius: var(--r-sm);
+  padding: 9px 15px; text-align: right; line-height: 1.25;
+}
+.dtotal b {
+  display: block; font-family: var(--font-display); font-weight: 700;
+  font-size: 1.15rem; letter-spacing: -0.028em; color: var(--text);
+}
+.dtotal span { font-size: 0.72rem; color: var(--text-faint); letter-spacing: 0.02em; }
+
+.dlist {
+  list-style: none; margin: 0; padding: 0;
+  background: var(--panel); border: 1px solid var(--edge); border-radius: var(--r);
+  overflow: hidden;
+}
+
+.drow {
+  display: flex; align-items: center; gap: 15px;
+  padding: 15px 18px;
+  transition: background 0.14s;
+}
+.drow + .drow { border-top: 1px solid var(--edge); }
+.drow:hover { background: var(--paper); }
+
+.drow__logo {
+  width: 44px; height: 44px; border-radius: var(--pill); object-fit: contain; flex: none;
+  background: var(--paper-2); border: 1px solid var(--edge); padding: 5px;
+}
+/* A charity with no logo keeps the row's rhythm rather than collapsing it. */
+.drow__logo--none { background: var(--paper-2); }
+
+/* ⚠ min-width:0 so a long charity name truncates inside the row instead of pushing the
+   View tx button off the right edge on a narrow screen. */
+.drow__main { flex: 1; min-width: 0; }
+
+.drow__who {
+  font-size: 0.86rem; color: var(--text-dim); font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.drow__who a { color: var(--text-dim); text-decoration: none; }
+.drow__who a:hover { color: var(--text); text-decoration: underline; }
+.drow__age { color: var(--text-faint); }
+.drow__unknown { font-family: var(--font-mono); font-size: 0.78rem; }
+
+.drow__amt {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 1.28rem; letter-spacing: -0.03em; color: var(--text);
+  line-height: 1.2; margin-top: 2px;
+}
+.drow__amt span { font-size: 0.82rem; font-weight: 600; color: var(--text-dim); letter-spacing: 0; }
+
+.drow__tx { flex: none; }
+
+.dmore { display: flex; justify-content: center; margin-top: 18px; }
+.dmore__plus {
+  display: inline-grid; place-items: center; width: 18px; height: 18px; margin-left: 9px;
+  border-radius: var(--pill); background: var(--paper-2); border: 1px solid var(--edge);
+  font-size: 0.8rem; line-height: 1;
+}
+
+@media (max-width: 620px) {
+  .drow { gap: 12px; padding: 13px 14px; }
+  .drow__logo { width: 38px; height: 38px; }
+  .drow__amt { font-size: 1.1rem; }
+  .dtotals { width: 100%; }
+  .dtotal { flex: 1; text-align: left; }
+}
+
+/* A donations register that sits under a detail grid rather than beside one: centred, and given
+   room so it reads as its own section instead of as one more row of the table above it. */
+.sect--center {
+  margin-top: 58px;
+  padding-top: 42px;
+  border-top: 1px solid var(--edge);
+}
+.sect--center .sect__head {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+.sect--center .sect__title { justify-content: center; }
+.sect--center .sect__blurb { margin-top: 7px; }
+/* ⚠ The total keeps its own alignment. Centred text inside a right-aligned plate looked like a
+   mistake, and the figure is read as a value, not as a caption. */
+.sect--center .dtotal { text-align: center; }
+
+@media (max-width: 620px) {
+  .sect--center { margin-top: 40px; padding-top: 30px; }
+}
+
+/* ══ the paired registers ═══════════════════════════════════════════════════
+   Donations and burns, side by side: the two halves of what one fee does. */
+
+.dpair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* ⚠ Wide enough that a row's name, amount and View tx still sit on one line. Below this the
+     button wraps under the amount and the row stops reading as a row. */
+  gap: 34px;
+  align-items: start;
+}
+
+/* ⛔ The rule and the top margin belong to the PAIR, not to each panel. Left on both, the divider
+   was drawn twice at slightly different heights whenever the two heads differed in wrap. */
+.dpair > .sect--center {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+  /* ⛔⛔ MIN-WIDTH 0. A grid item defaults to min-content width, so one long row — an unbroken
+     address or a big number — pushes the column wider than its track and the two stop being equal.
+     This is the fix for the classic "grid column will not shrink" bug. */
+  min-width: 0;
+}
+
+.dpair {
+  margin-top: 58px;
+  padding-top: 42px;
+  border-top: 1px solid var(--edge);
+}
+
+/* ⚠ Half-width columns hold noticeably less, so the rows inside them tighten rather than being
+   allowed to wrap. The register still has to be scannable at a glance. */
+.dpair .drow { gap: 12px; padding: 13px 15px; }
+.dpair .drow__logo { width: 36px; height: 36px; }
+.dpair .sect__title { font-size: 1.32rem; }
+
+/* ⚠ The burn row is marked with the TOKEN's logo, which arrives as a <TokenImage> and therefore
+   carries `.timg` sizing of its own. Without this the image ignored the row's 36px slot and the two
+   registers stopped lining up. */
+.drow__logo--token,
+.drow__logo--token img {
+  width: 100%; height: 100%;
+  border-radius: var(--pill);
+  object-fit: contain;
+}
+.dpair .drow__logo--token { width: 36px; height: 36px; flex: none; }
+
+.drow__kind { font-weight: 600; }
+/* ⚠ The ETH spent sits UNDER the burned figure's weight, never beside it as an equal. They are
+   different assets and the site's rule is that those never meet in one number. */
+.drow__sub { font-weight: 400; color: var(--text-faint); font-size: 0.82rem; }
+
+.dnote {
+  margin: 14px 0 0;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+.dnote a { color: var(--text-dim); text-decoration: underline; text-underline-offset: 2px; }
+.dnote a:hover { color: var(--text); }
+
+/* ⛔ Collapses rather than squeezing. Two five-row registers at half a phone's width is two
+   unreadable registers, and the rule between them becomes the only thing legible. */
+@media (max-width: 900px) {
+  .dpair { grid-template-columns: 1fr; gap: 46px; }
+  .dpair > .sect--center + .sect--center {
+    padding-top: 40px;
+    border-top: 1px solid var(--edge);
+  }
+}
+
+@media (max-width: 620px) {
+  .dpair { margin-top: 40px; padding-top: 30px; gap: 36px; }
+}
+
+/* What a launch has actually delivered to its charity, under its market cap. Reserved even when
+   empty so a grid of cards keeps one height. */
+.tcard__gave {
+  display: block;
+  /* ⛔⛔ A FIXED HEIGHT AND NO WRAPPING, not min-height. Measured on the live grid: "$19.6k donated"
+     wrapped to two lines on the narrower cards, so this element came out 40px on some and 17px on
+     others and rippled the whole grid by 23px — the exact failure the graduated badge is overlaid
+     to avoid. The string is short enough never to need a second line; if it ever does, it clips
+     rather than moving everything below it. */
+  height: 1.05rem;
+  line-height: 1.05rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--good);
+}
+
+/* ══ connecting an X or GitHub account ══════════════════════════════════════
+   ⚠ Appended, and every class name checked against the whole file first — this stylesheet has
+   carried a duplicated block before, and the LATER copy is the one that wins. */
+
+/* The provider mark. ⚠ `currentColor` so one icon works on the dark filled button, the light menu
+   row and the grey chip without three copies of the SVG. */
+.pico { display: inline-flex; width: 15px; height: 15px; flex: none; }
+.pico svg { width: 100%; height: 100%; fill: currentColor; }
+
+.connect { display: inline-flex; align-items: center; gap: 8px; }
+/* ⚠ A menu row is a full-width flex row, so the icon needs the same treatment as the text. */
+.connect--item { justify-content: flex-start; }
+
+/* ── the claim card, centred ── */
+.acctcard { text-align: center; }
+.acctcard__lede {
+  font-size: 0.88rem; color: var(--text-dim); line-height: 1.6;
+  /* ⚠ A measure, not a full-width line. Centred text over 900px is unreadable however good it is. */
+  max-width: 52ch; margin: 10px auto 0;
+}
+.acctcard__actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+.acctcard__who {
+  display: flex; gap: 8px; justify-content: center; align-items: center;
+  flex-wrap: wrap; margin-top: 12px;
+}
+/* ⚠ The card centres its header, but a list of launches underneath must not be — amounts read down
+   a column and centring them makes every row start in a different place. */
+.acctcard .claim { text-align: left; }
+.acctcard .claim .field__h { text-align: left; }
+
+.acctchip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 12px; border-radius: var(--pill);
+  background: var(--accent-hi); border: 1px solid var(--edge);
+  font-size: 0.82rem; font-weight: 600;
+}
+
+/* ── a connected account in the header menu ──
+   ⛔ INERT. This row states who you are signed in as; it is not an action. It carries no hover and
+   no pointer, because a row that lights up in a menu of actions reads as one. */
+.profile__acct {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 13px; color: inherit;
+  border-bottom: 1px solid var(--edge);
+}
+/* ⚠ Sized and round HERE. Without this the raw <img> renders at its natural size — a 96px square
+   sprite in a 40px row — which is what made this look like a broken card rather than a name. */
+.profile__avatar {
+  width: 22px; height: 22px; flex: none; border-radius: 50%;
+  object-fit: cover; background: var(--paper-2);
+}
+/* ⚠ Takes the free space so the provider mark sits hard right, where two accounts line up under
+   each other and can be told apart at a glance. */
+.profile__handle {
+  flex: 1; min-width: 0; font-size: 0.85rem; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+/* ⭐ The only thing on the row that goes anywhere, so it is the only thing that reacts. */
+.profile__go {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; flex: none; border-radius: 50%;
+  color: var(--text-dim); text-decoration: none;
+  transition: background 0.14s, color 0.14s;
+}
+.profile__go:hover { background: var(--accent-hi); color: var(--text); }
+.profile__go:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+.profile__acct .pico { color: inherit; }
+
+/* ⚠ The same avatar and name in the header TRIGGER, when there is no wallet to show instead. */
+.profile__name {
+  font-size: 0.85rem; font-weight: 600; max-width: 14ch;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ⚠ THE THIRD GRID COLUMN, as one element. `.step` lays out exactly three children; anything more
+   wraps onto a new row in the 62px number column. Every other step has a single <p> here, so this
+   is the only one that needed a wrapper. */
+.step__body { min-width: 0; max-width: 62ch; }
+.step__body p + p { margin-top: 12px; }
+
+/* ⚠ The only list on the how-it-works page. Kept tight to the paragraph above it so the three
+   options read as one answer rather than as a new section. */
+.hiw__list { margin: 10px 0 14px; padding-left: 18px; color: var(--text-dim); line-height: 1.65; }
+.hiw__list li { margin-bottom: 7px; }
+.hiw__list strong { color: var(--text); font-weight: 600; }
+
+/* ⚠ A link inside a ledger row's LABEL column, which is otherwise plain text — so it needs the
+   icon baseline and the underline-on-hover that the value column's links already have. */
+.acctlink { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: inherit; }
+.acctlink:hover span { text-decoration: underline; }
+.acctlink .pico { color: var(--text-dim); }
+
+/* ══ the fee split: a burn toggle above a list of recipients ═════════════════
+   ⚠ Every class checked against the whole file first — this stylesheet is appended to, and a
+   duplicated name means the LATER copy silently wins. */
+
+/* ── the percentage box, shared by the burn row and every recipient ── */
+.pctbox { display: inline-flex; align-items: center; gap: 3px; flex: none; }
+.pctbox__in {
+  width: 56px; min-height: 40px; padding: 5px 8px; text-align: right;
+  background: var(--panel); border: 1px solid var(--edge-lit); border-radius: var(--r-sm);
+  color: var(--text); font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600;
+}
+.pctbox__in:focus { outline: none; border-color: var(--ink); }
+/* ⚠ Spinners fight the mono alignment and are redundant beside a typed percentage. */
+.pctbox__in::-webkit-outer-spin-button,
+.pctbox__in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.pctbox__in { -moz-appearance: textfield; appearance: textfield; }
+.pctbox__u { font-size: 0.85rem; color: var(--text-dim); font-weight: 600; }
+
+/* ── the toggle ── */
+.sw {
+  width: 40px; height: 23px; padding: 0; flex: none; cursor: pointer;
+  border: 1px solid var(--edge-lit); border-radius: 999px; background: var(--bg);
+  transition: background 0.16s, border-color 0.16s;
+}
+.sw__dot {
+  display: block; width: 15px; height: 15px; border-radius: 50%;
+  background: var(--text-dim); margin-left: 3px;
+  transition: transform 0.16s, background 0.16s;
+}
+.sw.is-on { background: var(--ink); border-color: var(--ink); }
+.sw.is-on .sw__dot { transform: translateX(17px); background: var(--panel); }
+.sw:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.burnrow {
+  display: flex; align-items: center; gap: 11px;
+  padding: 12px 14px; border: 1px solid var(--edge-lit); border-radius: var(--r-sm);
+  background: var(--panel); transition: border-color 0.16s, background 0.16s;
+}
+.burnrow.is-on { border-color: var(--ink); background: var(--accent-hi); }
+.burnrow__name { font-size: 0.9rem; font-weight: 600; flex: 1; }
+.burnrow__hint { margin-top: 7px; }
+
+/* ── the recipients ── */
+.recips { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.recip {
+  border: 1px solid var(--edge-lit); border-radius: var(--r-sm);
+  background: var(--panel); padding: 11px 12px;
+}
+/* ⚠ Wraps rather than scrolling. On a narrow screen the value input drops to its own line, which
+   keeps an address readable — a row that scrolls sideways hides the percentage, which is the part
+   somebody is checking. */
+.recip__row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.recip__kind {
+  display: inline-flex; align-items: center; gap: 6px; flex: none;
+  padding-left: 10px; border: 1px solid var(--edge-lit); border-radius: var(--r-sm);
+  background: var(--bg);
+}
+.recip__kind .pico { color: var(--text-dim); }
+/* ⚠ The native select keeps its own disclosure arrow; only its chrome is removed so the row reads
+   as one control with the mark. */
+.recip__sel {
+  min-height: 40px; padding: 0 8px 0 4px; border: 0; background: transparent;
+  font-family: inherit; font-size: 0.85rem; font-weight: 600; color: var(--text); cursor: pointer;
+}
+.recip__sel:focus { outline: none; }
+
+.recip__val { flex: 1 1 200px; min-width: 0; min-height: 40px; }
+.recip__val.mono { font-size: 0.8rem; }
+
+.recip__x {
+  width: 32px; height: 32px; flex: none; cursor: pointer;
+  border: 1px solid var(--edge-lit); border-radius: 50%; background: var(--bg);
+  color: var(--text-dim); font-size: 1.1rem; line-height: 1;
+}
+.recip__x:hover:not(:disabled) { border-color: var(--danger); color: var(--danger); }
+/* ⚠ Disabled rather than hidden on the last row: a control that vanishes reads as a bug, and the
+   title says why it cannot be pressed. */
+.recip__x:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.recip__hint { font-size: 0.78rem; color: var(--text-dim); margin: 7px 0 0; line-height: 1.5; }
+.recip__hint strong { color: var(--text); font-weight: 600; }
+.recip__err { color: var(--danger); font-weight: 500; }
+
+/* ⚠ Centred, and it is the only thing in the foot. The running total that used to sit beside it is
+   gone — the shares are kept summing to 100 as they are typed, so there is nothing left to report. */
+.recips__foot { display: flex; justify-content: center; margin-top: 11px; }

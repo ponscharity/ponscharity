@@ -1,0 +1,23 @@
+[Unit]
+Description=Pons Charity — forward the burn share and buy back & burn $CHARITY
+After=network-online.target
+
+[Service]
+Type=oneshot
+# ⛔ /root is where everything lives; ProtectHome=true kills this with 200/CHDIR before it runs.
+ProtectHome=false
+WorkingDirectory=/root/charity-remit
+EnvironmentFile=/root/charity-ops/keeper.env
+# ⚠ Optional so the unit still runs (read-only, exit 0) on a box that has not been armed.
+# ⭐ Holds OPS_KEY (forwards the share out of ops) and BURN_WALLET_KEY (0xB97F2573…, receives the
+#   40%, pushes it into the burner, signs every burn).
+# ⭐ BURN_SHARE_BPS=8000 is 40% of total. BURN_ENABLED=0 stops it with no redeploy.
+# ⛔ NOT the keeper's env: KEEPER_KEY drives the LAUNCH buy-backs and must stay a separate sender,
+#    or the two units collide on a nonce and one of them silently does nothing.
+EnvironmentFile=-/root/charity-ops/burn.key.env
+# ⛔⛔ The high-water mark MUST survive a redeploy. Losing it does not lose money, but the next pass
+# refuses to run until an operator says which way to re-baseline — so keep it off /tmp.
+Environment=BURN_STATE=/var/lib/charity/burn-state.json
+StateDirectory=charity
+ExecStart=/usr/bin/node /root/charity-remit/ops/burn-cranker.mjs --send
+TimeoutStartSec=600

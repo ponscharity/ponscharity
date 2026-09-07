@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700&family=Inter+Tight:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  /* The site's own tokens. ⚠ Copied rather than imported: this renders standalone in headless
+     Chrome and must not depend on the app build existing. */
+  :root {
+    --paper:#f4f2ec; --panel:#ffffff; --edge:#e4e1d8; --accent:#cfe9b0; --accent-deep:#a9d183;
+    --ink:#14170f; --text-dim:#57604f; --text-faint:#626a5b;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  /* ⛔ Exactly 1200x630, the size X and every other scraper crops to. Anything else is letterboxed
+     or cropped through the middle of the wordmark. */
+  html, body { width: 1200px; height: 630px; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: "Inter Tight", system-ui, sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0; overflow: hidden;
+  }
+  .mark {
+    width: 148px; height: 148px; border-radius: 34px;
+    background: var(--panel); border: 1px solid var(--edge);
+    display: grid; place-items: center; margin-bottom: 34px;
+  }
+  .mark img { width: 96px; height: 96px; object-fit: contain; }
+  h1 {
+    font-family: "Archivo", sans-serif; font-weight: 700;
+    font-size: 104px; letter-spacing: -0.038em; line-height: 1;
+  }
+  .rule {
+    width: 132px; height: 1px; background: var(--edge); margin: 30px 0 26px;
+  }
+  .dom {
+    font-size: 25px; font-weight: 600; letter-spacing: 0.02em; color: var(--text-dim);
+  }
+  .chip {
+    margin-top: 30px; padding: 9px 22px; border-radius: 999px;
+    background: var(--accent); border: 1px solid var(--accent-deep);
+    font-size: 19px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+</style></head>
+<body>
+  <div class="mark"><img src="logo.png" alt=""></div>
+  <h1>Pons Charity</h1>
+  <div class="rule"></div>
+  <div class="dom">ponscharity.family</div>
+  <div class="chip">Robinhood Chain &nbsp;·&nbsp; Pons V2</div>
+</body></html>

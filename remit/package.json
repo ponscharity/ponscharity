@@ -1,0 +1,11 @@
+{
+  "name": "charity-remit",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-strip-types --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "viem": "^2.56.0"
+  }
+}

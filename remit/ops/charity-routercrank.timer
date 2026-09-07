@@ -1,0 +1,15 @@
+[Unit]
+Description=Split and burn each launch's creator share
+
+[Timer]
+# ⛔⛔ OFFSET FROM THE KEEPER ON PURPOSE. Both sign with the SAME key, and two senders on one nonce
+# produce a replacement transaction rather than two transactions — so one of them silently does
+# nothing. The keeper runs every 15 minutes from boot+60s; this sits deliberately between passes.
+OnBootSec=8min
+OnUnitActiveSec=15min
+# ⚠ A missed pass is not lost work: fees keep accruing and the next pass takes them all. No burst.
+Persistent=false
+AccuracySec=30s
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=Back up the Pons Charity remit ledger regularly
+
+[Timer]
+# ⚠ More often than the keeper runs, so a change is captured before the next pass can overwrite it.
+OnBootSec=5min
+OnUnitActiveSec=10min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

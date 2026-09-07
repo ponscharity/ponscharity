@@ -1,0 +1,9 @@
+{
+  "name": "charity-api",
+  "private": true,
+  "type": "module",
+  "description": "Logos, the donation feed, and the identity/claim service for fee shares assigned to an X or GitHub account.",
+  "dependencies": {
+    "viem": "^2.21.0"
+  }
+}

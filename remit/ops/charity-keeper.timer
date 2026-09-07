@@ -1,0 +1,20 @@
+[Unit]
+Description=Run the Pons Charity remit keeper periodically
+
+[Timer]
+# ⚠ Ten minutes after boot, then every fifteen. Fees accumulate on trades, not on the clock, and the
+# keeper's own floors decide whether a balance is worth bridging, so a shorter interval costs
+# nothing: a pass with nothing to do is a few reads and an exit.
+OnBootSec=10min
+OnUnitActiveSec=15min
+# ⚠ Jitter, so every pass does not hit the RPC on the same second as whatever else this box runs on
+# a quarter hour. ⛔ Kept well under the interval: a delay approaching it would let one pass drift
+# into the next window, and overlap is the one thing the schedule exists to prevent.
+RandomizedDelaySec=90
+# ⛔ Persistent=false on purpose. A missed pass must NOT fire a catch-up burst on boot: the work is
+# idempotent but the point of the schedule is spacing, and a burst is the one thing that could put
+# two passes close enough together to matter.
+Persistent=false
+
+[Install]
+WantedBy=timers.target
